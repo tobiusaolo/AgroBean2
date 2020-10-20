@@ -14,16 +14,12 @@ from bokeh.palettes import Spectral5,Category20c,Spectral11
 from bokeh.transform import factor_cmap,cumsum
 from bokeh.embed import components,file_html
 from bokeh.models.sources import ColumnDataSource
-
+from flaskwebgui import FlaskUI
 
 db_connect = engine = create_engine('sqlite://///home/kobe-toby/Documents/new/untitled1/example.db')
 
 app = Flask(__name__)
-
-ui=FlaskUI(app)
-
-
-
+# ui = FlaskUI(app)
 def getData():
     sql = "select * from agrobean_results"
     df = pd.read_sql(sql, db_connect)
@@ -113,6 +109,7 @@ def maps():
 def map():
     return render_template('map.html')
 
+# ui.run()
 if __name__ == '__main__':
     
     app.run()
