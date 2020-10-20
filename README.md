@@ -1,2 +1,2 @@
-# AgroBeab2
-Android application 
+# AgroBean Desktop
+Desktop application
