@@ -14,5 +14,5 @@ Werkzeug==0.15.2
 WTForms==2.2.1
 psycopg2==2.7.3.1
 pandas==0.20.1
-bokeh==0.12.5
+bokeh==2.2.3
 folium== 0.1.1

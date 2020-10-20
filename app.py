@@ -11,7 +11,8 @@ from bokeh.resources import CDN
 from bokeh.models import ColumnDataSource
 from bokeh.models.tools import HoverTool
 from bokeh.palettes import Spectral5,Category20c,Spectral11
-from bokeh.transform import factor_cmap,cumsum
+# from bokeh.transform import factor_cmap,cumsum
+form bokeh.models.expressions import cumsum,factor_cmap
 from bokeh.embed import components,file_html
 from bokeh.models.sources import ColumnDataSource
 from flaskwebgui import FlaskUI
