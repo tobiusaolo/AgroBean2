@@ -5,6 +5,7 @@ from math import pi
 import numpy as np
 import pandas as pd
 import folium
+import pandas_bokeh
 from bokeh.models import (HoverTool, FactorRange, Plot, LinearAxis, Grid, Range1d)
 from bokeh.plotting import figure
 from bokeh.resources import CDN
