@@ -1,30 +1,86 @@
 from flask import Flask,render_template,url_for,redirect
 from sqlalchemy import create_engine
 import math
+import json
+import plotly
+import plotly.graph_objs as go
+import plotly.express as px
 from math import pi
 import numpy as np
 import pandas as pd
 import folium
-import pandas_bokeh
-from bokeh.models import (HoverTool, FactorRange, Plot, LinearAxis, Grid, Range1d)
-from bokeh.plotting import figure
-from bokeh.resources import CDN
-from bokeh.models import ColumnDataSource
-from bokeh.models.tools import HoverTool
-from bokeh.palettes import Spectral5,Category20c,Spectral11
-from bokeh.transform import factor_cmap,cumsum
-from bokeh.embed import components,file_html
-from bokeh.models.sources import ColumnDataSource
 from flaskwebgui import FlaskUI
-
-db_connect = engine = create_engine('sqlite://///home/kobe-toby/Documents/new/untitled1/example.db')
+from extract import extract_result
+db_connect = engine = create_engine('sqlite:///example.db')
 
 app = Flask(__name__)
-# ui = FlaskUI(app)
+ui = FlaskUI(app)
 def getData():
     sql = "select * from agrobean_results"
     df = pd.read_sql(sql, db_connect)
     return df
+# create bar graph
+def bar_graph():
+    df2=getData()
+    df2=df2.groupby("result").count()
+    df2 = pd.DataFrame(df2)
+    df2.reset_index(inplace=True)
+    data = [
+        go.Bar(
+            x=df2['result'], # assign x as the dataframe column 'x'
+            y=df2['id']
+        )
+    ]
+    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
+# create line graph
+def line_graph():
+    df2=getData()
+    # bean rust
+    dfr=df2.loc[df2['result'] == 'Bean rust']
+    dfr['count']=dfr.groupby('date')['date'].transform('count')
+    # Angular leaf spot
+    dfl=df2.loc[df2['result'] == 'Angular Leaf Spot']
+    dfl['count']=dfl.groupby('date')['date'].transform('count')
+    # healthy
+    dfh=df2.loc[df2['result'] == 'Healthy']
+    dfh['count']=dfh.groupby('date')['date'].transform('count')
+    data = [
+        go.Scatter(
+            x=dfr['date'], # assign x as the dataframe column 'x'
+            y=dfr['count'],
+            # mode='Bean+Rust',
+            name='Bean Rust'
+        ),
+        go.Scatter(
+            x=dfl['date'], # assign x as the dataframe column 'x'
+            y=dfl['count'],
+            # mode='Angular+Leaf+Spot',
+            name='Angular Leaf Spot'
+        ),
+        go.Scatter(
+            x=dfh['date'], # assign x as the dataframe column 'x'
+            y=dfh['count'],
+            # mode='Healthy',
+            name='Healthy'
+        )
+    ]
+    
+    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
+def pie_chart():
+    df2=getData()
+    df2=df2.groupby("result").count()
+    df2 = pd.DataFrame(df2)
+    df2.reset_index(inplace=True)
+    data = [
+        go.Pie(
+            labels=df2['result'], # assign x as the dataframe column 'x'
+            values=df2['id']
+        )
+    ]
+    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
 #helper function to convert lat/long to easting/northing for mapping
 #this relies on functions from the pyproj library
 def LongLat_to_EN(long, lat):
@@ -38,54 +94,37 @@ def LongLat_to_EN(long, lat):
 @app.route('/')
 def index():
     df2=getData()
+    # counts
+    # bean rust
+    dfr=df2.loc[df2['result'] == 'Bean rust']
+    dfr['count']=dfr.groupby('date')['date'].transform('count')
+    bean_rust=dfr['count'].sum()
+    # Angular leaf spot
+    dfl=df2.loc[df2['result'] == 'Angular Leaf Spot']
+    dfl['count']=dfl.groupby('date')['date'].transform('count')
+    agl=dfl['count'].sum()
+    # healthy
+    dfh=df2.loc[df2['result'] == 'Healthy']
+    dfh['count']=dfh.groupby('date')['date'].transform('count')
+    health=dfh['count'].sum()
+    all_res=health+agl+bean_rust
     s = df2.result
     counts = s.value_counts()
     percent = s.value_counts(normalize=True)
     percent100 = s.value_counts(normalize=True).mul(100).round(1).astype(str) + '%'
     df=pd.DataFrame({'counts': counts, 'per': percent, 'per100': percent100})
-    print(df.reset_index(inplace=True))
-    return render_template('index.html',column_names=df.columns.values, row_data=list(df.values.tolist()),link_column="id", zip=zip)
+    # print(df.reset_index(inplace=True))
+    return render_template('index.html',column_names=df.columns.values, 
+    row_data=list(df.values.tolist()),link_column="id", zip=zip,
+    bn=bean_rust,agl=agl,hl=health,all_res=all_res)
 
 
 @app.route('/charts',methods=['GET','POST'])
 def charts():
-    df2=getData()
-    df2=df2.groupby("result").count()
-    print(df2)
-    source = ColumnDataSource(df2)
-    results = source.data['result'].tolist()
-    p = figure(x_range=results,plot_height=350,plot_width=900)
-    color_map = factor_cmap(field_name='result',palette=Spectral5, factors=results)
-    p.vbar(x='result', top='date', source=source, width=0.90, color=color_map)
-    p.xaxis.axis_label = 'Bean Diseases'
-    p.yaxis.axis_label = 'COUNT'
-    hover = HoverTool()
-    hover.tooltips = [("Totals", "@id")]
-    hover.mode = 'vline'
-    p.add_tools(hover)
-    # script, div = components(p)
-    html3 = file_html(p,CDN) 
-    # dispaly piechart
-    df2['angle'] = df2['date']/df2['date'].sum() * 2*pi
-    df2['color'] = Category20c[len(df2)]
-    p = figure(plot_height=350, toolbar_location=None,tools="hover", tooltips="@result: @date", x_range=(-0.5, 1.0))
-    p.wedge(x=0, y=1, radius=0.4,start_angle=cumsum('angle', include_zero=True), end_angle=cumsum('angle'),line_color="white", fill_color='color', legend_field='result', source=df2)
-    p.axis.axis_label=None
-    p.axis.visible=False
-    p.grid.grid_line_color = None
-    html = file_html(p, CDN)   
-    # creating line graph
-    toy_df = pd.DataFrame(data=np.random.rand(5,3), columns = ('a', 'b' ,'c'), index = pd.DatetimeIndex(start='01-01-2015',periods=5, freq='d'))
-    numlines=len(toy_df.columns)
-    mypalette=Spectral11[0:numlines]
-    p = figure(width=900, height=300, x_axis_type="datetime") 
-    p.multi_line(xs=[toy_df.index.values]*numlines,
-                    ys=[toy_df[name].values for name in toy_df],
-                    line_color=mypalette,
-                    line_width=5)
-    html2 = file_html(p,CDN)
-
-    return  render_template('chartjs.html',plot2=html2,plot=html,plot3=html3)
+    bar =bar_graph()
+    line =line_graph()
+    pie=pie_chart()
+    return  render_template('chartjs.html',plot=bar,plot2=line,plot3=pie)
 
 @app.route('/tables',methods=['GET','POST'])
 def tables():
@@ -109,9 +148,9 @@ def maps():
 @app.route('/map')
 def map():
     return render_template('map.html')
-
-# ui.run()
-if __name__ == '__main__':
+extract_result()
+ui.run()
+# if __name__ == '__main__':
     
-    app.run()
+#     app.run()
 
