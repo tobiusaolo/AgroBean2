@@ -1,2 +1,2 @@
 # AgroBean Desktop
-Desktop application
+Desktop application for the AgroBean mobile application
