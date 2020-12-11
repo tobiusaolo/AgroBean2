@@ -11,6 +11,7 @@ import pandas as pd
 import folium
 from flaskwebgui import FlaskUI
 from extract import extract_result
+import petl as etl
 db_connect = engine = create_engine('sqlite:///example.db')
 
 app = Flask(__name__)
@@ -46,12 +47,12 @@ def line_graph():
     dfh=df2.loc[df2['result'] == 'Healthy']
     dfh['count']=dfh.groupby('date')['date'].transform('count')
     data = [
-        go.Scatter(
-            x=dfr['date'], # assign x as the dataframe column 'x'
-            y=dfr['count'],
-            # mode='Bean+Rust',
-            name='Bean Rust'
-        ),
+        # go.Scatter(
+        #     x=dfr['date'], # assign x as the dataframe column 'x'
+        #     y=dfr['count'],
+        #     # mode='Bean+Rust',
+        #     name='Bean Rust'
+        # ),
         go.Scatter(
             x=dfl['date'], # assign x as the dataframe column 'x'
             y=dfl['count'],
@@ -107,7 +108,7 @@ def index():
     dfh=df2.loc[df2['result'] == 'Healthy']
     dfh['count']=dfh.groupby('date')['date'].transform('count')
     health=dfh['count'].sum()
-    all_res=health+agl+bean_rust
+    all_res=health+agl
     s = df2.result
     counts = s.value_counts()
     percent = s.value_counts(normalize=True)
@@ -115,8 +116,7 @@ def index():
     df=pd.DataFrame({'counts': counts, 'per': percent, 'per100': percent100})
     # print(df.reset_index(inplace=True))
     return render_template('index.html',column_names=df.columns.values, 
-    row_data=list(df.values.tolist()),link_column="id", zip=zip,
-    bn=bean_rust,agl=agl,hl=health,all_res=all_res)
+    row_data=list(df.values.tolist()),link_column="id", zip=zip,agl=agl,hl=health,all_res=all_res)
 
 
 @app.route('/charts',methods=['GET','POST'])
@@ -149,8 +149,9 @@ def maps():
 def map():
     return render_template('map.html')
 extract_result()
-ui.run()
+# ui.run()
 # if __name__ == '__main__':
     
-#     app.run()
+    
+#     app.run(debug=True)
 
