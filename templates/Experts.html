@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock title%}
+{% block content %}
+        <main class="content-wrapper">
+          <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12-desktop">
+                <div class="mdc-card">
+                  <h6 class="card-title">Line chart</h6>
+                 <div class="chart" id="linegraph">
+                  <script>
+                      var graphs = {{plot2 | safe}};
+                      Plotly.plot('linegraph',graphs,{});
+                  </script>
+                </div>
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12-desktop">
+                <div class="mdc-card">
+                  <h6 class="card-title">Bar chart</h6>
+                 <div class="chart" id="bargraph">
+                  <script>
+                      var graphs = {{plot | safe}};
+                      Plotly.plot('bargraph',graphs,{});
+                  </script>
+                </div>
+                  
+                </div>
+              </div>
+            
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12-desktop">
+                <div class="mdc-card">
+                  <h6 class="card-title">Pie chart</h6>
+                   <div class="chart" id="piegraph">
+                  <script>
+                      var graphs = {{plot3 | safe}};
+                      Plotly.plot('piegraph',graphs,{});
+                  </script>
+                </div>
+                </div>
+              </div>
+              
+              </div>
+            </div>
+          </div>
+        </main>
+{% endblock %}
