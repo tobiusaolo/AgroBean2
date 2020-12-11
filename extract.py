@@ -8,7 +8,7 @@ def extract_result():
     try:
         db_connect = create_engine('postgres://awjzgmwqiatzjg:e4424ae3d375e2057bcc9cde832672940d44ea2c05260e28ccb04dc1575ec52d@ec2-34-204-22-76.compute-1.amazonaws.com:5432/dabbhqt4pegslv')
         table = etl.fromdb(db_connect,"select * from result")# 
-        print(etl.look(table))
+        # print(etl.look(table))
         connection = sqlite3.connect('example.db')
         etl.todb(table, connection, 'agrobean_results')
 
@@ -16,4 +16,4 @@ def extract_result():
         return 1
     
     
-extract_result()
+# extract_result()

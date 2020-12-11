@@ -1,4 +1,4 @@
-from flask import Flask,render_template,url_for,redirect
+from flask import Flask,render_template,url_for,redirect,request
 from sqlalchemy import create_engine
 import math
 import json
@@ -9,12 +9,17 @@ from math import pi
 import numpy as np
 import pandas as pd
 import folium
+import sqlite3
 from flaskwebgui import FlaskUI
 from extract import extract_result
 db_connect = engine = create_engine('sqlite:///example.db')
+global conn
+conn = sqlite3.connect('example.db')
 
 app = Flask(__name__)
 ui = FlaskUI(app)
+conn.execute('CREATE TABLE IF NOT EXISTS staff (id INTEGER PRIMARY KEY AUTOINCREMENT ,name TEXT, email TEXT, contact TEXT, role_ TEXT,location TEXT)')
+conn.close()
 def getData():
     sql = "select * from agrobean_results"
     df = pd.read_sql(sql, db_connect)
@@ -94,6 +99,11 @@ def LongLat_to_EN(long, lat):
 @app.route('/')
 def index():
     df2=getData()
+    con=sqlite3.connect("example.db")
+    cur = con.cursor()
+    cur.execute("select * from staff")
+    rows = cur.fetchall()
+    
     # counts
     # bean rust
     dfr=df2.loc[df2['result'] == 'Bean rust']
@@ -114,9 +124,8 @@ def index():
     percent100 = s.value_counts(normalize=True).mul(100).round(1).astype(str) + '%'
     df=pd.DataFrame({'counts': counts, 'per': percent, 'per100': percent100})
     # print(df.reset_index(inplace=True))
-    return render_template('index.html',column_names=df.columns.values, 
-    row_data=list(df.values.tolist()),link_column="id", zip=zip,
-    bn=bean_rust,agl=agl,hl=health,all_res=all_res)
+    return render_template('index.html',column_names=df.columns.values,link_column="id", zip=zip,
+    bn=bean_rust,agl=agl,hl=health,all_res=all_res,row_data=rows)
 
 
 @app.route('/charts',methods=['GET','POST'])
@@ -148,6 +157,24 @@ def maps():
 @app.route('/map')
 def map():
     return render_template('map.html')
+@app.route('/register_staff')
+def register_staff():
+    return render_template('Experts.html')
+# add staff to db 
+@app.route('/add_staff', methods=['GET','POST'])
+def add_staff():
+    if request.method=="POST":
+        username=request.form["username"]
+        email=request.form["email"]
+        contact=request.form["contact"]
+        role=request.form["role"]
+        location=request.form["location"]
+        with sqlite3.connect("example.db") as conn:
+            cur=conn.cursor()
+            cur.execute("INSERT INTO staff(name,email,contact,role_,location) VALUES(?,?,?,?,?)",(username,email,contact,role,location))
+            conn.commit()
+    return render_template('Experts.html')
+    
 extract_result()
 ui.run()
 # if __name__ == '__main__':

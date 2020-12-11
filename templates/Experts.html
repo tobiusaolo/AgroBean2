@@ -6,39 +6,89 @@
             <div class="mdc-layout-grid__inner">
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12-desktop">
                 <div class="mdc-card">
-                  <h6 class="card-title">Line chart</h6>
-                 <div class="chart" id="linegraph">
-                  <script>
-                      var graphs = {{plot2 | safe}};
-                      Plotly.plot('linegraph',graphs,{});
-                  </script>
+                 
+      <form  class='form' action="/add_staff" method="POST" >
+                  <div class="template-demo">
+                  <h1 class="h1">Add Expert</h1>
+                    <div class="mdc-layout-grid__inner">
+                      <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-6-desktop">
+                        <div class="mdc-text-field mdc-text-field--outlined">
+                          <input class="mdc-text-field__input" id="text-field-hero-input" name="username">
+                          <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                              <label for="text-field-hero-input" class="mdc-floating-label">Expert's Name</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-6-desktop">
+                        <div class="mdc-text-field mdc-text-field--outlined">
+                           <input class="mdc-text-field__input" id="text-field-hero-input" name="email">
+                          <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                              <label for="text-field-hero-input" class="mdc-floating-label">Email</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-6-desktop">
+                        <div class="mdc-text-field mdc-text-field--outlined">
+                          <input class="mdc-text-field__input" id="text-field-hero-input"  name="contact">
+                          <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                              <label for="text-field-hero-input" class="mdc-floating-label">Contact</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-6-desktop">
+                        <div class="mdc-text-field mdc-text-field--outlined ">
+                           <input class="mdc-text-field__input" id="text-field-hero-input" name="location">
+                          <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                             <label for="text-field-hero-input" class="mdc-floating-label">Location</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                    </div>
+                      <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12-desktop">
+                        <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-leading-icon">
+                           <input class="mdc-text-field__input" id="text-field-hero-input" name="role">
+                          <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                            <label for="text-field-hero-input" class="mdc-floating-label">Role</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-6-desktop">
+                        <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon">
+                          <input type="submit" class="btn btn-success" name="submit" value="submit"/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12-desktop">
-                <div class="mdc-card">
-                  <h6 class="card-title">Bar chart</h6>
-                 <div class="chart" id="bargraph">
-                  <script>
-                      var graphs = {{plot | safe}};
-                      Plotly.plot('bargraph',graphs,{});
-                  </script>
-                </div>
+                </form>
                   
-                </div>
               </div>
+              
             
               </div>
-              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12-desktop">
-                <div class="mdc-card">
-                  <h6 class="card-title">Pie chart</h6>
-                   <div class="chart" id="piegraph">
-                  <script>
-                      var graphs = {{plot3 | safe}};
-                      Plotly.plot('piegraph',graphs,{});
-                  </script>
-                </div>
-                </div>
-              </div>
+             
               
               </div>
             </div>

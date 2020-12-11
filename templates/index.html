@@ -55,14 +55,14 @@
               <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
                 <div class="mdc-card">
                   <div class="d-flex justify-content-between">
-                    <h4 class="card-title mb-0">Bean healthy Statics</h4>
+                    <h4 class="card-title mb-0">List of Agricultural Experts</h4>
                     <div>
                         <i class="material-icons refresh-icon">refresh</i>
                         <i class="material-icons options-icon ml-2">more_vert</i>
                     </div>
                   </div>
                   <div class="d-block d-sm-flex justify-content-between align-items-center">
-                      <h5 class="card-sub-title mb-2 mb-sm-0">AgroBean mobile Application result counts and percentages by class</h5>
+                     
                       <div class="menu-button-container">
                         <button class="mdc-button mdc-menu-button mdc-button--raised button-box-shadow tx-12 text-dark bg-white font-weight-light">
                             Last 7 days
@@ -88,16 +88,26 @@
                       </div>
                   </div>
                   <div class="mdc-layout-grid__inner mt-2">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-layout-grid__cell--span-8-tablet">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-layout-grid__cell--span-8-tablet">
                         <div class="table-responsive">
                           <table class="table dashboard-table">
+                           <thead>
+                            <td>Expert</td>
+                            <td>Email</td>
+                            <td>Contact</td>
+                            <td>Role</td>
+                            <td>Location</td>
+                        </thead>
                             <tbody>
+
                             {% for row in row_data %}
                               <tr>
-                              {% for col, row_ in zip(column_names, row) %}
-                                <td>{{row_}}</td>
-                                
-                                  {% endfor %}
+                              
+                              <td>{{row[1]}}</td>
+                              <td>{{row[2]}}</td>
+                              <td> {{ row[3]}}</td>
+                              <td>{{row[4]}}</td>	
+                              <td>{{row[5]}}</td>	
                               </tr>
                               {% endfor %}
                             </tbody>
