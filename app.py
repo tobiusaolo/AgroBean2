@@ -127,7 +127,7 @@ def index():
     for row in results:
         trial.append(row[1])
     dianosis_count =trial.count('Angular Leaf Spot')
-    dianosis_count_ =trial.count('Healhty')
+    dianosis_count_ =trial.count('Healthy')
     
   
     
