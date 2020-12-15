@@ -68,6 +68,7 @@ def line_graph():
     
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
+    # pie chart function
 def pie_chart():
     df2=getData()
     df2=df2.groupby("result").count()
@@ -90,7 +91,7 @@ def LongLat_to_EN(long, lat):
       return easting, northing
     except:
       return None, None
-
+# fetch data from staff table
 @app.route('/')
 def index():
     df2=getData()
