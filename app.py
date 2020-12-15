@@ -1,6 +1,8 @@
 from flask import Flask,render_template,url_for,redirect,request
 from sqlalchemy import create_engine
 import math
+import sys
+import os
 import json
 import plotly
 import plotly.graph_objs as go
@@ -10,15 +12,15 @@ import numpy as np
 import pandas as pd
 import folium
 import sqlite3
-from flaskwebgui import FlaskUI
 from extract import extract_result
 import petl as etl
 db_connect = engine = create_engine('sqlite:///example.db')
 global conn
 conn = sqlite3.connect('example.db')
 
+
 app = Flask(__name__)
-ui = FlaskUI(app)
+
 conn.execute('CREATE TABLE IF NOT EXISTS staff (id INTEGER PRIMARY KEY AUTOINCREMENT ,name TEXT, email TEXT, contact TEXT, role_ TEXT,location TEXT)')
 conn.close()
 def getData():
@@ -178,9 +180,9 @@ def add_staff():
     return render_template('Experts.html')
     
 extract_result()
-ui.run()
-# if __name__ == '__main__':
+# ui.run()
+if __name__ == '__main__':
     
     
-#     app.run(debug=True)
+    app.run()
 
