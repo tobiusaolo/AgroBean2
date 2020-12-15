@@ -54,12 +54,6 @@ def line_graph():
     dfh=df2.loc[df2['result'] == 'Healthy']
     dfh['count']=dfh.groupby('date')['date'].transform('count')
     data = [
-        # go.Scatter(
-        #     x=dfr['date'], # assign x as the dataframe column 'x'
-        #     y=dfr['count'],
-        #     # mode='Bean+Rust',
-        #     name='Bean Rust'
-        # ),
         go.Scatter(
             x=dfl['date'], # assign x as the dataframe column 'x'
             y=dfl['count'],
@@ -76,6 +70,7 @@ def line_graph():
     
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
+    # pie chart function
 def pie_chart():
     df2=getData()
     df2=df2.groupby("result").count()
@@ -98,7 +93,7 @@ def LongLat_to_EN(long, lat):
       return easting, northing
     except:
       return None, None
-
+# fetch data from staff table
 @app.route('/')
 def index():
     df2=getData()
@@ -113,13 +108,15 @@ def index():
     dfr['count']=dfr.groupby('date')['date'].transform('count')
     bean_rust=dfr['count'].sum()
     # Angular leaf spot
-    dfl=df2.loc[df2['result'] == 'Angular Leaf Spot']
+    dfl=df2.loc[df2['result'] =="Angular Leaf Spot"]
     dfl['count']=dfl.groupby('date')['date'].transform('count')
     agl=dfl['count'].sum()
     # healthy
     dfh=df2.loc[df2['result'] == 'Healthy']
     dfh['count']=dfh.groupby('date')['date'].transform('count')
     health=dfh['count'].sum()
+
+    
     all_res=health+agl
     s = df2.result
     counts = s.value_counts()
@@ -128,8 +125,18 @@ def index():
     df=pd.DataFrame({'counts': counts, 'per': percent, 'per100': percent100})
     # print(df.reset_index(inplace=True))
 
+    results=db_connect.execute('select * from agrobean_results')
+    trial = []
+    for row in results:
+        trial.append(row[1])
+    dianosis_count =trial.count('Angular Leaf Spot')
+    dianosis_count_ =trial.count('Healthy')
+    
+  
+    
+    
     return render_template('index.html',column_names=df.columns.values, 
-    link_column="id", zip=zip,agl=agl,hl=health,all_res=all_res,row_data=rows)
+    link_column="id", zip=zip,agl=dianosis_count,hl=dianosis_count_ ,all_res=dianosis_count+dianosis_count_ ,row_data=rows)
 
 
 @app.route('/charts',methods=['GET','POST'])
